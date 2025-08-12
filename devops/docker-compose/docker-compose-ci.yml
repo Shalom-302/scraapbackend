@@ -1,0 +1,25 @@
+version: "3.9"
+
+volumes:
+  boilerplate_db_migrations:
+    name: boilerplate_db_migrations
+  boilerplate_logs:
+    name: boilerplate_logs
+
+services:
+  api:
+    image: "${API_IMAGE}"
+    container_name: api
+    build:
+      context: ../../
+      dockerfile: backend/Dockerfile
+      cache_from:
+        - ${API_IMAGE}
+    ports:
+      - 5000:5000
+    env_file:
+      - ../../.env
+
+    volumes:
+      - boilerplate_db_migrations:/app/backend/alembic/versions
+      - boilerplate_logs:/app/backend/log
