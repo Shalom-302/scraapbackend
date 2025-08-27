@@ -3,6 +3,7 @@ from backend.models.role import Role
 from backend.models.user import User
 from backend.models.opera_log import OperaLog
 from backend.models.login_log import LoginLog
+from backend.models.veille import Article
 
 import pkgutil
 import importlib

@@ -13,6 +13,7 @@ from backend.core.conf import settings
 from backend.core.registrar import register_app
 from backend.app.api import (admin_router)
 from backend.utils.prometheus import EndpointFilter, setting_otlp
+from uvicorn.config import LOGGING_CONFIG
 
 
 app = FastAPI()
@@ -108,7 +109,7 @@ if __name__ == '__main__':
     #     raise e
     
     # update uvicorn access logger format
-    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config = LOGGING_CONFIG
     print("---> ", log_config)
     log_config["formatters"]["access"][
         "fmt"

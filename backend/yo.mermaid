@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant Admin as 👤 Admin
+    participant API as 🖥️ Serveur API (FastAPI)
+    participant Broker as 📌 Redis (Tableau d'Affichage)
+    participant Worker as 👨‍🍳 Worker (Celery)
+    participant DB as 🗄️ PostgreSQL (Garde-Manger)
+
+    Admin->>+API: 1. POST /run (Commande de 30 min)
+    API->>+Broker: 2. Envoie la tâche
+    API-->>-Admin: 3. Réponse IMMÉDIATE (202 Accepted)
+    
+    loop Le Worker travaille
+        Worker->>+Broker: 4. Cherche une nouvelle tâche
+        Broker-->>-Worker: 5. Donne la tâche "veille"
+        Worker->>Worker: 6. Exécute le workflow (30 min)
+        Worker->>+DB: 7. Sauvegarde les résultats (CRUD)
+        DB-->>-Worker: 8. Confirme la sauvegarde
+    end
+
+    Note over Admin, DB: Un peu plus tard...
+
+    Admin->>+API: 9. GET /articles?score_min=7
+    API->>+DB: 10. Lit les articles filtrés
+    DB-->>-API: 11. Retourne les articles
+    API-->>-Admin: 12. Affiche le résultat

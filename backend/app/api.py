@@ -1,11 +1,9 @@
 from fastapi import APIRouter
-from backend.app import Handlers
-from backend.core.conf import settings
 
-admin_router = APIRouter(prefix=f"{settings.FASTAPI_API_V1_PATH}")
+from backend.app.admin.api.v1 import v1_router
 
+# Ceci est le routeur principal pour la sous-application /admin
+admin_router = APIRouter()
 
-for handler in Handlers.iterator():
-    if getattr(handler, 'router', None):
-        if handler.__name__.split('.')[-4] == 'admin':
-            admin_router.include_router(handler.router)
+# Inclure toutes les routes v1 sous le préfixe /api/v1
+admin_router.include_router(v1_router, prefix="/api/v1")

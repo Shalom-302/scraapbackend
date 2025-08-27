@@ -47,13 +47,19 @@ opentelemetry-distro = "^0.49b2"
 opentelemetry-instrumentation-fastapi = "^0.49b2"
 opentelemetry-instrumentation-logging = "^0.49b2"
 opentelemetry-exporter-otlp = "^1.28.2"
+langchain-deepseek = "^0.1.4"
+langgraph = "^0.6.4"
+beautifulsoup4 = "^4.13.4"
+trafilatura = "^2.0.0"
+celery = "^5.5.3"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-makemigrations = { "shell" = "alembic revision --autogenerate", help = "Automatic creation of database migration files" }
+
+makemigrations = { cmd = "alembic revision --autogenerate", help = "Automatic creation of database migration files (accepts -m)" }
 migrate = { "shell" = "alembic upgrade heads", help = "Database migration" }
 downgrade = { "shell" = "alembic downgrade -1", help = "Downgrade the last migration" }
 drop-tables = { "cmd" = "python3 -m seeder.run drop-tables", help = "Drop all tables" }

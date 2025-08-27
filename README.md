@@ -8,15 +8,14 @@ FastAPI REST API boilerplate is a comprehensive starting point for developing ro
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Features](#features)
-- [Project structure](#project-structure)
-- [Environmnent variables](#environmnent-variables)
-- [Quick run](#quick-run)
-- [Comfortable development](#comfortable-development)
-- [Links](#links)
-- [x] Config Service ([Pydantic](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)).
-- [Database utils](#database-utils)
-- [Tests in Docker](#tests-in-docker)
+- [FastAPI REST API boilerplate](#fastapi-rest-api-boilerplate)
+  - [Features](#features)
+  - [Project Structure](#project-structure)
+  - [Environmnent variables](#environmnent-variables)
+  - [Quick run](#quick-run)
+  - [Comfortable development](#comfortable-development)
+  - [Links](#links)
+  - [Database utils](#database-utils)
 <!-- - [Tests](#tests)
 - [Test benchmarking](#test-benchmarking) -->
 

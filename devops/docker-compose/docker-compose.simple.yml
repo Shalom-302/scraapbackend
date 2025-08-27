@@ -1,0 +1,62 @@
+services:
+  # --- Service 1: Base de Données PostgreSQL ---
+  db:
+    image: postgres:15-alpine
+    container_name: veille_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # === CORRECTION : On utilise .env.docker ===
+    env_file:
+      - .env.docker
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # --- Service 2: Redis ---
+  redis:
+    image: redis:7-alpine
+    container_name: veille_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  # --- Service 3: L'API FastAPI ---
+  api:
+    container_name: veille_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ../../backend:/app/backend 
+    ports:
+      - "8000:8000"
+    # === CORRECTION : On utilise .env.docker ===
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  # --- Service 4: Le Worker Celery ---
+  worker:
+    container_name: veille_worker
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    command: python -m celery -A backend.core.celery_app worker -l info --pool=solo
+    volumes:
+    - ../../backend:/app/backend  # Montez vers /app/backend
+    environment:
+    - PYTHONPATH=/app/backend  # Important !
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+# Définition du volume nommé pour la persistance des données PostgreSQL
+volumes:
+  postgres_data:

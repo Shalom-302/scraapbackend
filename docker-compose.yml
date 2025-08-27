@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: veille_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: veille_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  api:
+    container_name: veille_api
+    build: .
+    command: sh -c "cd backend && alembic upgrade head && cd .. && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+  worker:
+    container_name: veille_worker
+    build: .
+    command: sh -c "cd backend && alembic upgrade head && cd .. && python -m celery -A backend.core.celery_app worker -l info --pool=solo"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    restart: on-failure
+
+volumes:
+  postgres_data:

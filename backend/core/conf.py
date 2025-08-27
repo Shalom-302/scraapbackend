@@ -1,6 +1,7 @@
 from functools import lru_cache
 import os
-from typing import Literal
+from typing import Literal, Optional
+
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -14,51 +15,59 @@ class Settings(BaseSettings):
 
     APP_NAME: str = "api_v2"
 
-    OTLP_GRPC_ENDPOINT: str
+    OTLP_GRPC_ENDPOINT: str = "localhost:4317"
 
     # Env Config
     ENVIRONMENT: Literal['dev', 'preprod', 'prod'] = 'dev'
 
+    CELERY_BROKER_REDIS_DATABASE: int = 1
+    CELERY_BACKEND_REDIS_DATABASE: int = 2
     # Env POSTGRES
-    POSTGRES_HOST: str
-    POSTGRES_PORT: int
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "password"
     POSTGRES_ECHO: bool = False
     POSTGRES_DATABASE: str = 'postgres'
     CLIENT_URL: str = 'http://localhost:3000'
 
-    GENAI_API_KEY: str
+    GENAI_API_KEY: str = ""
+    DEEPSEEK_API_KEY: str = ""
+    # Configuration optionnelle pour LangSmith
+    LANGSMITH_TRACING_V2: Optional[str] = "true"
+    LANGSMITH_ENDPOINT: Optional[str] = "https://api.smith.langchain.com"
+    LANGSMITH_API_KEY: str = ""
+    LANGSMITH_PROJECT: str = ""
 
     # Env Redis
-    REDIS_HOST: str
-    REDIS_PORT: int
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
     REDIS_PASSWORD: str | None = None
-    REDIS_DATABASE: int
+    REDIS_DATABASE: int = 0
     
     # Env MinIO
-    MINIO_ENDPOINT: str
-    MINIO_PORT: int
-    MINIO_ACCESS_KEY: str
-    MINIO_SECRET_KEY: str
-    MINIO_BUCKET_NAME: str
-    MINIO_CLOUD_URL: str
+    MINIO_ENDPOINT: str = "localhost"
+    MINIO_PORT: int = 9000
+    MINIO_ACCESS_KEY: str = "minio-access-key"
+    MINIO_SECRET_KEY: str = "minio-secret-key"
+    MINIO_BUCKET_NAME: str = "boilerplate"
+    MINIO_CLOUD_URL: str = "http://localhost:9000"
     
     # Env SMTP
-    SMTP_TLS: str
-    SMTP_PORT: str
-    SMTP_HOST: str
-    SMTP_USER: str
-    EMAILS_FROM_EMAIL: str
-    EMAILS_FROM_NAME: str
-    SMTP_PASSWORD: str
+    SMTP_TLS: str = "True"
+    SMTP_PORT: str = "587"
+    SMTP_HOST: str = "smtp.example.com"
+    SMTP_USER: str = "user@example.com"
+    EMAILS_FROM_EMAIL: str = "noreply@example.com"
+    EMAILS_FROM_NAME: str = "Boilerplate"
+    SMTP_PASSWORD: str = "smtp-password"
     EMAIL_TEMPLATES_DIR: str = os.getcwd() + "/templates/build"
 
     # Env Token
-    TOKEN_SECRET_KEY: str  # key secrets.token_urlsafe(32)
+    TOKEN_SECRET_KEY: str = "your-token-secret-key"  # key secrets.token_urlsafe(32)
 
     # Env Opera Log
-    OPERA_LOG_ENCRYPT_SECRET_KEY: str  # key os.urandom(32), need to use bytes.hex() method to convert to str
+    OPERA_LOG_ENCRYPT_SECRET_KEY: str = "your-opera-log-encrypt-secret-key"  # key os.urandom(32), need to use bytes.hex() method to convert to str
 
     # FastAPI
     FASTAPI_API_V1_PATH: str = '/api/v1'
@@ -210,9 +219,9 @@ class Settings(BaseSettings):
         'confirm_password',
     ]
 
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_SECRET_KEY: str
-    GOOGLE_WEBHOOK_OAUTH_REDIRECT_URI: str
+    GOOGLE_CLIENT_ID: str = "your-google-client-id"
+    GOOGLE_SECRET_KEY: str = "your-google-secret-key"
+    GOOGLE_WEBHOOK_OAUTH_REDIRECT_URI: str = "http://localhost:3000/oauth2/callback"
 
 @lru_cache
 def get_settings() -> Settings:
